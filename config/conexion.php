@@ -39,4 +39,29 @@ function limpiarCadenas($str){
 }
 
 
+if(!function_exists('encryption')){  //alid SI LA FUNCION YA ESTA EN MEMORIA
+  function encryption($string){
+  //WRITE_LOG("ENTRANDO A CONEXION ENCRYPTION - SK = ". SECRET_KEY);
+  $output=FALSE;
+  $key= hash('sha256',SECRET_KEY);
+  //$iv=substr(hash('sh256',SECRET_IV,0,16));
+  $iv=openssl_random_pseudo_bytes(openssl_cipher_iv_length(METHOD));
+  $output=openssl_encrypt($string, METHOD, $key,0,$iv);
+  $output = base64_encode($output. '::'.$iv);
+  return $output;
+}
+
+  function decryption($string){
+  //write_log("ENTRANDO A conecion descryption - SK = ".sectret_key);
+  $key = hash('sha256', SECRET_KEY);
+  list($string,$iv) = array_pad(explode('::', base64_decode($string), 2),2,null);
+  $output=openssl_decrypt($string, METHOD, $key,0,$iv);
+  
+  return $output;
+
+
+  }
+
+}
+
 ?>
